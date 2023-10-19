@@ -46,6 +46,24 @@ module.exports = class NotesController{
         }
     }
     static async editNote(req,res){
-        res.status(200).json ({message: "rota para editar um note"})
+        // res.status(200).json ({message: "rota para editar um note"})
+        const {id} = req.params
+        const {title, description} = req.body;
+        const note = await Note.findByPk(id);
+
+        try {
+            if(note){
+                note.title = title || note.title
+                note.descrition - description || note.description
+                note.date = Date.now()
+                await note.save();
+                res.status(201).json({message: "anotação editada com sucesso", note: note});
+            }else {
+                res.status(404).json({error: "Erro ao tentar achar uma anotação"})
+            }
+        } catch (error) {
+            console.log (error);
+            res.status(404).json({error: "Erro ao tentar editar uma anotção"})
+        }
     }
 }
